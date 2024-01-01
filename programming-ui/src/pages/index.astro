@@ -1,10 +1,8 @@
 ---
 import Layout from "../layout/Layout.astro";
-import GradingButton from "../components/GradingButton.svelte";
-import TextArea from "../components/TextArea.svelte";
+import InputSubmit from "../components/InputSubmit.svelte";
 ---
 
 <Layout>
-  <TextArea client:only={"svelte"} />
-  <GradingButton client:only={"svelte"} />
+  <InputSubmit client:only="svelte" />
 </Layout>

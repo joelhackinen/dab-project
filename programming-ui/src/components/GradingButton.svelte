@@ -1,14 +1,14 @@
 <script>
   import { userUuid } from "../stores/stores.js";
+
+  export let code;
   
-  const doSimpleGradingDemo = async () => {
+  const submitCode = async () => {
     const data = {
       user: $userUuid,
-      code: `def hello():
-  return "helo world!"
-`,
+      code: code,
     };
-    
+
     const response = await fetch("/api/grade", {
       method: "POST",
       headers: {
@@ -25,7 +25,7 @@
 
 <button
   class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-4 rounded m-4"
-  on:click={doSimpleGradingDemo}
+  on:click={submitCode}
 >
-  Do grading demo!
+  Submit
 </button>
