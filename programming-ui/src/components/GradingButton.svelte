@@ -6,7 +6,7 @@
   const submitCode = async () => {
     const data = {
       user: $userUuid,
-      code: code,
+      code,
     };
 
     const response = await fetch("/api/grade", {
