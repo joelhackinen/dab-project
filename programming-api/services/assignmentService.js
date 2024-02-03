@@ -5,10 +5,22 @@ const columns = ["title", "assignment_order", "handout"];
 export const findAll = async () => {
   return await sql`
     SELECT
-      ${ sql(columns) }
+      *
     FROM
       programming_assignments
   ;`;
+};
+
+export const findByNumber = async (number) => {
+  const [assignment] = await sql`
+    SELECT
+      *
+    FROM
+      programming_assignments
+    WHERE
+      assignment_order = ${number}
+  ;`;
+  return assignment;
 };
 
 export const getAvailableAssignments = async (user_uuid) => {

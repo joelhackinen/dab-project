@@ -5,14 +5,15 @@
   
   const submitCode = async () => {
     const data = {
-      user: $userUuid,
+      assignmentNumber: 1,
       code,
     };
 
-    const response = await fetch("/api/grade", {
+    const response = await fetch("/api/submissions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": $userUuid,
       },
       body: JSON.stringify(data),
     });
