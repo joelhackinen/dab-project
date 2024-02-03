@@ -1,4 +1,5 @@
 import * as programmingAssignmentService from "./services/programmingAssignmentService.js";
+import * as submissionService from "./services/submissionService.js";
 import { serve } from "./deps.js";
 import { sql } from "./database/database.js";
 
@@ -10,7 +11,13 @@ const handleRequest = async (request) => {
   const data = {
     testCode: testCode,
     code: requestData.code,
+    user: requestData.user,
   };
+
+  const submission = await submissionService.getNextAssignmentByUser(data.user);
+  const count = await submissionService.checkForPendingSubmissions(data.user);
+  console.log(submission, count);
+
 
   const response = await fetch("http://grader-api:7000/", {
     method: "POST",

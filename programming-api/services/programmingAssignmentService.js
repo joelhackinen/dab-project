@@ -1,12 +1,46 @@
 import { sql } from "../database/database.js";
 
-const findAll = async () => {
+const columns = ["title", "assignment_order", "handout"];
+
+export const findAll = async () => {
   return await sql`
     SELECT
-      *
+      ${ sql(columns) }
     FROM
       programming_assignments
   ;`;
 };
 
-export { findAll };
+export const getAvailableAssignments = async (user_uuid) => {
+  const completedAssignments = await sql`
+    SELECT
+      ${ sql(columns) }
+    FROM
+      programming_assignments pa
+    JOIN
+      programming_assignment_submissions pas ON pa.id = pas.programming_assignment_id
+    WHERE
+      pas.user_uuid = ${user_uuid}
+        AND
+      pas.status = 'processed'
+        AND
+      pas.correct = TRUE
+  ;`;
+
+  const nextAssignmentNumber = completedAssignments.reduce((max, obj) => (
+    obj.assignment_order > max
+      ? obj.assignment_order
+      : max
+  ), 0);
+  
+  const nextAssignment = await sql`
+    SELECT
+      ${ sql(columns) }
+    FROM
+      programming_assignments
+    WHERE
+      assignment_order = ${nextAssignmentNumber}
+  ;`;
+  
+  return [completedAssignments, ...nextAssignment];
+};
