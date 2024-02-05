@@ -7,16 +7,6 @@ if (!user) {
   localStorage.setItem("userUuid", user);
 }
 
-export const assignments = writable(null, async (set) => {
-  const data = await getAssignments();
-  set(data);
-});
-
-export const setAssignmentsStore = async () => {
-  const data = await getAssignments();
-  assignments.set(data);
-};
-
 const getAssignments = async () => {
   const response = await fetch("/api/assignments", {
     headers: {
@@ -26,6 +16,16 @@ const getAssignments = async () => {
 
   const data = await response.json();
   return data;
+};
+
+export const assignments = writable(null, async (set) => {
+  const data = await getAssignments();
+  set(data);
+});
+
+export const setAssignmentsStore = async () => {
+  const data = await getAssignments();
+  assignments.set(data);
 };
 
 export const userUuid = readable(user);

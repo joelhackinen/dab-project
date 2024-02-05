@@ -1,8 +1,10 @@
 ---
 import Layout from "../layout/Layout.astro";
 import InputSubmit from "../components/InputSubmit.svelte";
+import AssignmentView from "../components/AssignmentView.svelte";
 ---
 
 <Layout>
+  <AssignmentView client:only="svelte" />
   <InputSubmit client:only="svelte" />
 </Layout>
