@@ -1,4 +1,5 @@
 import { Router } from "../deps.js";
+import { client } from "../app.js";
 import * as assignmentService from "../services/assignmentService.js";
 
 const router = new Router();
@@ -15,21 +16,14 @@ router.post("/submissions", async ({ request, response, state }) => {
   }
 
   const data = {
-    code,
-    user: state.user,
-    testCode: assignment.test_code,
-    assignment: assignment.assignment_order,
+    "code": code,
+    "user": state.user,
+    "testCode": assignment.test_code,
+    "assignment": assignment.assignment_order.toString(),
   };
 
-  const graderResponse = await fetch("http://grader-api:7000/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-  const graderData = await graderResponse.json();
-  return response.body = graderData;
+  await client.XADD("submissions", "*", data);
+  return response.status = 200;
 });
 
 export default router;

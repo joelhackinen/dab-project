@@ -1,5 +1,12 @@
-import { Application } from "./deps.js";
+import { Application, createClient } from "./deps.js";
 import submissionRouter from "./routers/submissionRouter.js";
+
+export const client = createClient({
+  url: "redis://redis:6379",
+  pingInterval: 1000,
+});
+
+await client.connect();
 
 const app = new Application();
 
