@@ -17,7 +17,7 @@ router.post("/submissions", async ({ request, response, state }) => {
   const data = {
     code,
     user: state.user,
-    testCode: assignment.testCode,
+    testCode: assignment.test_code,
     assignment: assignment.assignment_order,
   };
 

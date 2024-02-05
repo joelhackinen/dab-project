@@ -29,6 +29,18 @@ services:
     env_file:
       - project.env
 
+  sse-server:
+    build: sse-server
+    image: sse-server
+    restart: "no"
+    volumes:
+      - ./sse-server/:/app
+      - ./app-cache/:/app-cache
+    expose:
+      - 4000
+    env_file:
+      - project.env
+
   programming-ui:
     build: programming-ui
     image: programming-ui
@@ -40,6 +52,7 @@ services:
       - 3000
     depends_on:
       - programming-api
+      - sse-server
 
   grader-api:
     build: grader-api
