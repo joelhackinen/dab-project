@@ -19,7 +19,7 @@ try {
   console.log("Consumer group already exists, skipped creation.");
 }
 
-console.log(`Starting consumer ${consumerName}.`);
+console.log(`Starting consumer submissions-${consumerName}.`);
 
 while (true) {
   try {
@@ -62,11 +62,19 @@ while (true) {
 
       const submissionData = response[0].messages[0].message;
       console.log(submissionData);
-      const { code, testCode } = submissionData;
+      const { code, testCode, assignment, user } = submissionData;
 
       const result = await grade(code, testCode);
-      console.log(result);
-      
+
+      const resultObject = {
+        code,
+        result,
+        assignment,
+        user
+      };
+      console.log(resultObject);
+
+      await client.XADD("results", "*", resultObject);
     } else {
       console.log("No new stream entries.");
     }

@@ -18,9 +18,7 @@
       body: JSON.stringify(data),
     });
 
-    const jsonData = await response.json();
-    console.log(jsonData);
-    alert(JSON.stringify(jsonData));
+    alert(response.status == 200 ? "submission succeeded": "error in submitting");
   };
 </script>
 

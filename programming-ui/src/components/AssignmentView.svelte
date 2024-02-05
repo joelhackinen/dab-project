@@ -3,6 +3,7 @@
   import { onMount, onDestroy } from "svelte";
 
   let message = "";
+
   onMount(() => {
     const source = new EventSource(`/sse/?user=${$userUuid}`);
 
@@ -19,15 +20,6 @@
   onDestroy(() => {
     source.close();
   });
-
-  const pingSseServer = async () => {
-    await fetch("/sse/ping");
-  };
 </script>
 
 <h5>{message}</h5>
-<button
-  on:click={pingSseServer}
->
-  PINsaddsad
-</button>

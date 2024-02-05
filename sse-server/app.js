@@ -1,10 +1,24 @@
-import { Router, Application } from "./deps.js";
+import { Router, Application, ServerSentEvent } from "./deps.js";
 
 const clients = new Map();
 
 const app = new Application();
 const router = new Router();
 
+
+const worker = new Worker(import.meta.resolve("./worker.js"), { type: "module" });
+worker.postMessage("Start");
+
+worker.onmessage = (event) => {
+  const data = {
+    user: event.data.user,
+    assignment: event.data.assignment,
+    code: event.data.code,
+    result: event.data.result,
+  };
+  const target = clients.get(data.user);
+  target.dispatchMessage(data);
+};
 
 router.get("/", (ctx) => {
   const user = ctx.request.url.searchParams.get("user");
@@ -18,7 +32,7 @@ router.get("/", (ctx) => {
     console.log("Connection closed");
   });
   
-  target.dispatchMessage({ hello: "world" });
+  target.dispatchComment("hello");
 });
 
 
