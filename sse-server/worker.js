@@ -1,4 +1,5 @@
 import { createClient, commandOptions } from "./deps.js";
+import { sql } from "./database.js";
 
 const consumerName = crypto.randomUUID();
 
@@ -61,7 +62,27 @@ self.onmessage = async () => {
         console.log(`Acknowledged processing of entry ${entryId}.`);
   
         const resultData = response[0].messages[0].message;
-        self.postMessage(resultData);
+        console.log(resultData);
+        const { submissionId, feedback } = resultData;
+
+        try {
+          const addedSubmission = await sql`
+            UPDATE
+              programming_assignment_submissions
+            SET 
+              status='processed',
+              grader_feedback=${feedback},
+              correct=${feedback.startsWith(".")}
+            WHERE
+              id=${submissionId}
+            RETURNING
+              *;
+          `;
+          self.postMessage(resultData);
+        } catch (error) {
+          console.log(error);
+          self.postMessage(resultData);
+        }
       } else {
         console.log("No new stream entries.");
       }

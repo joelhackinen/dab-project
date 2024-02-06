@@ -11,6 +11,7 @@ services:
     depends_on:
       - programming-api
       - programming-ui
+      - sse-server
     ports:
       - 7800:7800
 
@@ -43,6 +44,7 @@ services:
       - project.env
     depends_on:
       - redis
+      - database
 
   programming-ui:
     build: programming-ui

@@ -61,15 +61,14 @@ while (true) {
       console.log(`Acknowledged processing of entry ${entryId}.`);
 
       const submissionData = response[0].messages[0].message;
-      console.log(submissionData);
-      const { code, testCode, assignment, user } = submissionData;
+      const { code, testCode, submissionId, user } = submissionData;
 
-      const result = await grade(code, testCode);
+      const feedback = await grade(code, testCode);
 
       const resultObject = {
         code,
-        result,
-        assignment,
+        feedback,
+        submissionId,
         user
       };
       console.log(resultObject);

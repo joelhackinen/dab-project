@@ -12,9 +12,8 @@ worker.postMessage("Start");
 worker.onmessage = (event) => {
   const data = {
     user: event.data.user,
-    assignment: event.data.assignment,
     code: event.data.code,
-    result: event.data.result,
+    feedback: event.data.feedback,
   };
   const target = clients.get(data.user);
   target.dispatchMessage(data);
@@ -26,12 +25,12 @@ router.get("/", (ctx) => {
 
   clients.delete(user);
   clients.set(user, target);
+  console.log("Client connected")
 
   target.addEventListener("close", () => {
     clients.delete(user);
     console.log("Connection closed");
   });
-  
   target.dispatchComment("hello");
 });
 

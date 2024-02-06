@@ -23,6 +23,18 @@ export const findByNumber = async (number) => {
   return assignment;
 };
 
+export const findById = async (id) => {
+  const [assignment] = await sql`
+    SELECT
+      *
+    FROM
+      programming_assignments
+    WHERE
+      id = ${id}
+  ;`;
+  return assignment;
+};
+
 export const getAvailableAssignments = async (user_uuid) => {
   const completedAssignments = await sql`
     SELECT
@@ -34,18 +46,16 @@ export const getAvailableAssignments = async (user_uuid) => {
     WHERE
       pas.user_uuid = ${user_uuid}
         AND
-      pas.status = 'processed'
-        AND
       pas.correct = TRUE
   ;`;
 
-  const nextAssignmentNumber = completedAssignments.reduce((max, obj) => (
-    obj.assignment_order > max
-      ? obj.assignment_order
+  const nextAssignmentNumber = completedAssignments.reduce((max, a) => (
+    a.assignment_order > max
+      ? a.assignment_order
       : max
-  ), 0);
+  ), 1);
   
-  const nextAssignment = await sql`
+  const [nextAssignment] = await sql`
     SELECT
       ${ sql(columns) }
     FROM
@@ -54,5 +64,5 @@ export const getAvailableAssignments = async (user_uuid) => {
       assignment_order = ${nextAssignmentNumber}
   ;`;
   
-  return [completedAssignments, ...nextAssignment];
+  return [...completedAssignments, nextAssignment];
 };
