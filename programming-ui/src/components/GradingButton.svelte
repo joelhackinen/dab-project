@@ -2,10 +2,11 @@
   import { userUuid } from "../stores/stores.js";
 
   export let code;
+  export let assignmentNumber;
   
   const submitCode = async () => {
     const data = {
-      assignmentNumber: 1,
+      assignmentNumber,
       code,
     };
 
@@ -23,8 +24,9 @@
 </script>
 
 <button
-  class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-4 rounded m-4"
+  class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-4 rounded m-4 disabled:bg-gray-500"
   on:click={submitCode}
+  disabled={!assignmentNumber}
 >
   Submit
 </button>

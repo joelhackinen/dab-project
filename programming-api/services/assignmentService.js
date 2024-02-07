@@ -63,6 +63,8 @@ export const getAvailableAssignments = async (user_uuid) => {
     WHERE
       assignment_order = ${nextAssignmentNumber}
   ;`;
+
+  if (nextAssignment) return [...completedAssignments, nextAssignment];
   
-  return [...completedAssignments, nextAssignment];
+  return completedAssignments;
 };

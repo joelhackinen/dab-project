@@ -18,7 +18,7 @@ const getAssignments = async () => {
   return data;
 };
 
-export const assignments = writable(null, async (set) => {
+export const assignments = writable([], async (set) => {
   const data = await getAssignments();
   set(data);
 });
