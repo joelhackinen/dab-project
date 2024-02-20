@@ -1,27 +1,41 @@
-import { Router, Application, ServerSentEvent } from "./deps.js";
+import {
+  Router,
+  Application,
+  ServerSentEvent,
+  ServerSentEventTarget
+} from "./deps.ts";
 
-const clients = new Map();
+import {
+  Submission
+} from "./types.ts";
+
+const clients = new Map<string, ServerSentEventTarget>();
 
 const app = new Application();
 const router = new Router();
 
-
 const worker = new Worker(import.meta.resolve("./worker.js"), { type: "module" });
 worker.postMessage("Start");
 
-worker.onmessage = (event) => {
+worker.onmessage = (event: MessageEvent<Submission>) => {
   const data = {
     user: event.data.user,
     code: event.data.code,
     feedback: event.data.feedback,
   };
   const target = clients.get(data.user);
-  target.dispatchMessage(data);
+  const e = new ServerSentEvent("success", { data });
+  target?.dispatchEvent(e);
 };
 
 router.get("/", (ctx) => {
   const user = ctx.request.url.searchParams.get("user");
-  const target = ctx.sendEvents();
+
+  if (!user) {
+    return ctx.response.status = 400;
+  }
+
+  const target = ctx.sendEvents({ keepAlive: true });
 
   clients.delete(user);
   clients.set(user, target);
@@ -31,7 +45,10 @@ router.get("/", (ctx) => {
     clients.delete(user);
     console.log("Connection closed");
   });
-  target.dispatchComment("hello");
+
+  const e = new ServerSentEvent("init", { data: "hello from server" });
+
+  target.dispatchEvent(e);
 });
 
 

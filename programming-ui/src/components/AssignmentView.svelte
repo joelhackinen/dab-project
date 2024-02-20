@@ -13,13 +13,17 @@
   onMount(() => {
     source = new EventSource(`/sse/?user=${$userUuid}`);
 
-    source.onmessage = (evt) => {
-      console.log(evt.data);
-      message = evt.data;
-    };
+    source.addEventListener("success", (event) => {
+      console.log(event.data);
+      message = event.data
+    });
+
+    source.addEventListener("init", (event) => {
+      console.log(event.data);
+    });
 
     source.onerror = (error) => {
-      console.log(error);
+      console.error(error);
     };
   });
 

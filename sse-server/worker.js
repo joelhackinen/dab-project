@@ -1,4 +1,4 @@
-import { createClient, commandOptions } from "./deps.js";
+import { createClient, commandOptions } from "./deps.ts";
 import { sql } from "./database.js";
 
 const consumerName = crypto.randomUUID();
