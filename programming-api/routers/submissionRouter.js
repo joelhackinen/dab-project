@@ -9,6 +9,11 @@ router.post("/submissions", async ({ request, response, state }) => {
   const body = request.body({ type: "json" });
   const { assignmentNumber, code } = await body.value;
 
+  const pendingSubmissionsExist = await submissionService.checkForPendingSubmissions(state.user);
+  if (pendingSubmissionsExist) {
+    return response.status = 400;
+  }
+
   const assignment = await assignmentService.findByNumber(assignmentNumber);
 
   if (!assignment) {

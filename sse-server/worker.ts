@@ -1,5 +1,10 @@
+/// <reference no-default-lib="true" />
+/// <reference lib="deno.worker" />
+
 import { createClient, commandOptions } from "./deps.ts";
 import { sql } from "./database.js";
+import { Submission } from "./types.ts";
+import { ProgrammingAssignmentSubmission } from "./types.ts";
 
 const consumerName = crypto.randomUUID();
 
@@ -8,9 +13,7 @@ const client = createClient({
   pingInterval: 1000,
 });
 
-self.onmessage = async () => {
-  await client.connect();
-
+const createConsumerGroup = async () => {
   try {
     await client.XGROUP_CREATE("results", "results_group", "0", {
       MKSTREAM: true
@@ -19,54 +22,48 @@ self.onmessage = async () => {
   } catch (e) {
     console.log("Consumer group already exists, skipped creation.");
   }
+};
+
+const readEntryFromStream = async () => {
+  const response = await client.XREADGROUP(
+    commandOptions({
+      isolated: true
+    }),
+    "results_group", 
+    consumerName, [
+      {
+        key: "results",
+        id: '>',
+      },
+    ], {
+      COUNT: 1,
+      BLOCK: 5000
+    },
+  );
+  return response;
+};
+
+self.onmessage = async () => {
+  await client.connect();
+  await createConsumerGroup();
   
   console.log(`Starting consumer results-${consumerName}.`);
 
   while (true) {
     try {
-      let response = await client.XREADGROUP(
-        commandOptions({
-          isolated: true
-        }),
-        "results_group", 
-        consumerName, [
-          {
-            key: "results",
-            id: '>',
-          },
-        ], {
-          COUNT: 1,
-          BLOCK: 5000
-        },
-      );
+      const response = await readEntryFromStream();
   
       if (response) {
-        /*
-        Response is an array of streams, each containing an array of entries:
-        [
-         {
-            "name": "mystream",
-            "messages": [
-              {
-                "id": "1642088708425-0",
-                "message": {
-                  "key": "value"
-                }
-              }
-            ]
-          }
-        ]
-        */
         const entryId = response[0].messages[0].id;
         await client.XACK("results", "results_group", entryId);
         console.log(`Acknowledged processing of entry ${entryId}.`);
   
-        const resultData = response[0].messages[0].message;
+        const resultData = response[0].messages[0].message as unknown as Submission;
         console.log(resultData);
         const { submissionId, feedback } = resultData;
 
         try {
-          const addedSubmission = await sql`
+          const [addedSubmission] = await sql<ProgrammingAssignmentSubmission[]>`
             UPDATE
               programming_assignment_submissions
             SET 
@@ -78,10 +75,10 @@ self.onmessage = async () => {
             RETURNING
               *;
           `;
-          self.postMessage(resultData);
+          self.postMessage(addedSubmission);
+          console.log(addedSubmission);
         } catch (error) {
-          console.log(error);
-          self.postMessage(resultData);
+          console.error(error);
         }
       } else {
         console.log("No new stream entries.");

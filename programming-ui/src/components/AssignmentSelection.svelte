@@ -3,8 +3,17 @@
   export let assignment;
 </script>
 
-<select bind:value={assignment} >
-  {#each $assignments as a, i}
-    <option value={a}>{i+1}. {a.title}</option>
-  {/each}
-</select>
+
+<div class="flex gap-x-2">
+  <label for="assignment-selection">Pick an assignment:</label>
+  <select
+    id="assignment-selection"
+    class="rounded border border-black"
+    bind:value={assignment}
+  >
+    {#each $assignments as a, i}
+      <option value={a}>{i+1}. {a.title}{`${a.completed ? " (completed)" : ""}`}</option>
+    {/each}
+  </select>
+</div>
+

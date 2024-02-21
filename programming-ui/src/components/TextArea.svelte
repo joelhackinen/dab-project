@@ -18,7 +18,8 @@
 </script>
 
 <textarea
-  class="w-full h-52 shadow-lg border border-black rounded-md font-mono"
+  id="code-block"
+  class="w-full h-52 focus:shadow-xl rounded-md border border-black font-mono bg-gray-50 outline-none"
   bind:value={code}
   on:keydown={handleKeydown}
 />

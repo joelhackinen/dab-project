@@ -19,12 +19,12 @@
       body: JSON.stringify(data),
     });
 
-    alert(response.status == 200 ? "submission succeeded": "error in submitting");
+    console.log(`submission, ${response.status === 200 ? "accepted": "rejected"}`);
   };
 </script>
 
 <button
-  class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-4 rounded m-4 disabled:bg-gray-500"
+  class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-4 rounded disabled:bg-gray-500"
   on:click={submitCode}
   disabled={!assignmentNumber}
 >

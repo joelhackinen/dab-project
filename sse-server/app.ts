@@ -6,7 +6,7 @@ import {
 } from "./deps.ts";
 
 import {
-  Submission
+  ProgrammingAssignmentSubmission
 } from "./types.ts";
 
 const clients = new Map<string, ServerSentEventTarget>();
@@ -14,17 +14,12 @@ const clients = new Map<string, ServerSentEventTarget>();
 const app = new Application();
 const router = new Router();
 
-const worker = new Worker(import.meta.resolve("./worker.js"), { type: "module" });
+const worker = new Worker(import.meta.resolve("./worker.ts"), { type: "module" });
 worker.postMessage("Start");
 
-worker.onmessage = (event: MessageEvent<Submission>) => {
-  const data = {
-    user: event.data.user,
-    code: event.data.code,
-    feedback: event.data.feedback,
-  };
-  const target = clients.get(data.user);
-  const e = new ServerSentEvent("success", { data });
+worker.onmessage = ({ data }: MessageEvent<ProgrammingAssignmentSubmission>) => {
+  const target = clients.get(data.user_uuid);
+  const e = new ServerSentEvent("result", { data });
   target?.dispatchEvent(e);
 };
 

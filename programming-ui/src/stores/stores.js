@@ -23,6 +23,10 @@ export const assignments = writable([], async (set) => {
   set(data);
 });
 
+export const markAssignmentCompleted = (id) => {
+  assignments.update((prev) => prev.map(a => a.id === id ? ({ ...a, completed: true }) : a))
+};
+
 export const setAssignmentsStore = async () => {
   const data = await getAssignments();
   assignments.set(data);

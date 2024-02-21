@@ -4,9 +4,9 @@ EXPOSE 4000
 
 WORKDIR /app
 
-COPY deps.js .
+COPY deps.ts .
 
-RUN deno cache deps.js
+RUN deno cache deps.ts
 
 COPY . .
 
