@@ -11,6 +11,7 @@ router.post("/submissions", async ({ request, response, state }) => {
 
   const pendingSubmissionsExist = await submissionService.checkForPendingSubmissions(state.user);
   if (pendingSubmissionsExist) {
+    console.log("user has pending submissions");
     return response.status = 400;
   }
 

@@ -7,21 +7,20 @@ services:
   nginx:
     image: nginx:latest
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - programming-api
       - programming-ui
       - sse-server
     ports:
-      - 7800:7800
+      - "7800:7800"
 
   programming-api:
-    build: programming-api
-    image: programming-api
-    restart: "no"
-    volumes:
-      - ./programming-api/:/app
-      - ./app-cache/:/app-cache
+    build:
+      context: programming-api
+      dockerfile: Dockerfile.prod
+    image: programming-api-prod
+    restart: "on-failure"
     expose:
       - 7777
     depends_on:
@@ -30,14 +29,19 @@ services:
       - redis
     env_file:
       - project.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: "5s"
+        max_attempts: 5
+        window: "30s"
 
   sse-server:
-    build: sse-server
-    image: sse-server
-    restart: "no"
-    volumes:
-      - ./sse-server/:/app
-      - ./app-cache/:/app-cache
+    build:
+      context: sse-server
+      dockerfile: Dockerfile.prod
+    image: sse-server-prod
+    restart: "on-failure"
     expose:
       - 4000
     env_file:
@@ -47,25 +51,30 @@ services:
       - database
 
   programming-ui:
-    build: programming-ui
-    image: programming-ui
-    restart: "no"
-    volumes:
-      - ./programming-ui/:/app
-      - astro_node_modules:/app/node_modules
-    expose:
-      - 3000
+    build:
+      context: programming-ui
+      dockerfile: Dockerfile.prod
+    image: programming-ui-prod
+    restart: "on-failure"
+    ports:
+      - "3000:80"
     depends_on:
       - programming-api
       - sse-server
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: "5s"
+        max_attempts: 5
+        window: "30s"
 
   grader-api:
-    build: grader-api
-    image: grader-api
-    restart: "no"
+    build:
+      context: grader-api
+      dockerfile: Dockerfile.prod
+    image: grader-api-prod
+    restart: "on-failure"
     volumes:
-      - ./grader-api/:/app
-      - ./app-cache/:/app-cache
       - "/var/run/docker.sock:/var/run/docker.sock"
     expose:
       - 7000
@@ -73,11 +82,16 @@ services:
       - redis
     deploy:
       replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: "5s"
+        max_attempts: 5
+        window: "30s"
 
   database:
     container_name: database-server-dab-p1-99f97847-4398-4a1b-b2e5-d211a33c1e01
     image: postgres:14.1
-    restart: "no"
+    restart: "unless-stopped"
     env_file:
       - project.env
 
