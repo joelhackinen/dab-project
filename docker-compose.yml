@@ -18,7 +18,7 @@ services:
   programming-api:
     build: programming-api
     image: programming-api
-    restart: "no"
+    restart: "on-failure"
     volumes:
       - ./programming-api/:/app
       - ./app-cache/:/app-cache
@@ -34,7 +34,7 @@ services:
   sse-server:
     build: sse-server
     image: sse-server
-    restart: "no"
+    restart: "on-failure"
     volumes:
       - ./sse-server/:/app
       - ./app-cache/:/app-cache
@@ -49,7 +49,7 @@ services:
   programming-ui:
     build: programming-ui
     image: programming-ui
-    restart: "no"
+    restart: "on-failure"
     volumes:
       - ./programming-ui/:/app
       - astro_node_modules:/app/node_modules
@@ -62,7 +62,7 @@ services:
   grader-api:
     build: grader-api
     image: grader-api
-    restart: "no"
+    restart: "on-failure"
     volumes:
       - ./grader-api/:/app
       - ./app-cache/:/app-cache
