@@ -4,7 +4,7 @@
 </script>
 
 
-<div class="flex gap-x-2">
+<div class="flex flex-wrap gap-x-2">
   <label for="assignment-selection">Pick an assignment:</label>
   <select
     id="assignment-selection"

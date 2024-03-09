@@ -72,11 +72,12 @@
   };
 </script>
 
-<div class="flex flex-col gap-2 items-start">
-  <div class="flex justify-between w-full items-center">
-    <AssignmentSelection bind:assignment />
+<div class="flex flex-col gap-2">
+  <div class="self-center w-full max-w-screen-md mb-16">
     <Points />
   </div>
+  <AssignmentSelection bind:assignment />
+
 
   {#if assignment}
     <p>{assignment.handout}</p>
