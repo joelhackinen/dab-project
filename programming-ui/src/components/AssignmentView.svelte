@@ -52,8 +52,12 @@
   };
 
   const submitCode = async () => {
+    if (!assignment) {
+      alert("No assignment chosen")
+      return;
+    }
     const data = {
-      assignmentNumber: assignment?.assignment_order,
+      assignmentNumber: assignment.assignment_order,
       code,
     };
 

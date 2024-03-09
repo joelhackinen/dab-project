@@ -20,3 +20,16 @@ export const findByNumber = async (number) => {
   ;`;
   return assignment;
 };
+
+export const addAssignment = async (title, assignment_order, handout, test_code) => {
+  return await sql`
+    INSERT INTO
+      programming_assignments (title, assignment_order, handout, test_code)
+    VALUES (
+      ${title},
+      ${assignment_order},
+      ${handout},
+      ${test_code},
+    )
+  ;`;
+};
