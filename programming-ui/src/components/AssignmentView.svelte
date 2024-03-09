@@ -12,6 +12,11 @@
   let showFeedback = false;
   let feedback = "";
 
+  $: if (assignment) {
+    showFeedback = false;
+    feedback = "";
+  }
+
   onMount(() => {
     source = new EventSource(`/sse/?user=${$userUuid}`);
 
@@ -60,6 +65,8 @@
       },
       body: JSON.stringify(data),
     });
+    showFeedback = false;
+    feedback = "";
 
     console.log(`submission ${response.status === 200 ? "accepted": "rejected"}`);
   };
@@ -76,9 +83,9 @@
   {/if}
 
   {#if showFeedback}
-    <code class="relative bg-slate-200 text-red-500">
+    <code class="relative bg-slate-200 text-red-500 p-4 rounded-xl">
       <button
-        class="absolute -top-2 -right-2 z-10 rounded-full bg-white"
+        class="absolute -top-2 -right-2 z-10 rounded-full bg-white hover:bg-red-500 hover:text-white"
         on:click={hideFeedback}
       >
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
