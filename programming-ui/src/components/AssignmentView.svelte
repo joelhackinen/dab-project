@@ -1,5 +1,5 @@
 <script>
-  import { markAssignmentCompleted, userUuid } from "../stores/stores";
+  import { setAssignmentsStore, userUuid } from "../stores/stores";
   import { onMount, onDestroy } from "svelte";
   import GradingButton from "./GradingButton.svelte";
   import TextArea from "./TextArea.svelte";
@@ -20,11 +20,11 @@
   onMount(() => {
     source = new EventSource(`/sse/?user=${$userUuid}`);
 
-    source.addEventListener("result", (event) => {
+    source.addEventListener("result", async (event) => {
       const obj = JSON.parse(event.data);
       if (obj.correct) {
         alert("correct!");
-        markAssignmentCompleted(obj.programming_assignment_id);
+        await setAssignmentsStore();
         return;
       }
       alert("incorrect!");
@@ -72,7 +72,9 @@
     showFeedback = false;
     feedback = "";
 
-    console.log(`submission ${response.status === 200 ? "accepted": "rejected"}`);
+    if (response.status !== 200) {
+      alert("submission rejected; you might have pending submissions");
+    }
   };
 </script>
 
@@ -84,6 +86,7 @@
 
 
   {#if assignment}
+    <h5 class="font-bold mt-4">Assignment:</h5>
     <p>{assignment.handout}</p>
   {/if}
 

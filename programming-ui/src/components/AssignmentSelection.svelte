@@ -1,6 +1,10 @@
 <script>
   import { assignments } from "../stores/stores";
   export let assignment;
+  
+  let nextAssignment;
+
+  $: nextAssignment = $assignments.reduce((prev, curr) => curr.assignment_order > prev && curr.completed ? prev + 1 : prev, 0) + 1;
 </script>
 
 
@@ -12,8 +16,9 @@
     bind:value={assignment}
   >
     {#each $assignments as a, i}
-      <option value={a}>{i+1}. {a.title}{`${a.completed ? " (completed)" : ""}`}</option>
+      <option value={a} disabled={a.assignment_order > nextAssignment}>
+        {i+1}. {a.title}{`${a.completed ? " (completed)" : ""}`}
+      </option>
     {/each}
   </select>
 </div>
-
