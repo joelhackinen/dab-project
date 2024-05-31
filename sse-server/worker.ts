@@ -19,7 +19,7 @@ const createConsumerGroup = async () => {
       MKSTREAM: true
     });
     console.log("Created consumer group.");
-  } catch (e) {
+  } catch (_e) {
     console.log("Consumer group already exists, skipped creation.");
   }
 };

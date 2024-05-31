@@ -11,6 +11,7 @@
   let source;
   let showFeedback = false;
   let feedback = "";
+  let pending = false;
 
   $: if (assignment) {
     showFeedback = false;
@@ -21,9 +22,11 @@
     source = new EventSource(`/sse/?user=${$userUuid}`);
 
     source.addEventListener("result", async (event) => {
+      pending = false;
       const obj = JSON.parse(event.data);
       if (obj.correct) {
         alert("correct!");
+        code = "";
         await setAssignmentsStore();
         return;
       }
@@ -74,7 +77,9 @@
 
     if (response.status !== 200) {
       alert("submission rejected; you might have pending submissions");
+      return;
     }
+    pending = true;
   };
 </script>
 
@@ -104,8 +109,8 @@
     </code>
   {/if}
 
-  <TextArea bind:code />
-  <GradingButton {submitCode}>
+  <TextArea bind:code disabled={pending} />
+  <GradingButton {submitCode} disabled={pending}>
     Submit
   </GradingButton>
 </div>
