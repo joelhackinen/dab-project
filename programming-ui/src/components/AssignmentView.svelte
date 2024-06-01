@@ -14,8 +14,7 @@
   let pending = false;
 
   $: if (assignment) {
-    showFeedback = false;
-    feedback = "";
+    hideFeedback();
   }
 
   onMount(() => {
@@ -49,7 +48,6 @@
   });
 
   const hideFeedback = () => {
-    console.log("error closed")
     showFeedback = false;
     feedback = "";
   };
@@ -72,8 +70,7 @@
       },
       body: JSON.stringify(data),
     });
-    showFeedback = false;
-    feedback = "";
+    hideFeedback();
 
     if (response.status !== 200) {
       alert("submission rejected; you might have pending submissions");
@@ -92,11 +89,11 @@
 
   {#if assignment}
     <h5 class="font-bold mt-4">Assignment:</h5>
-    <p>{assignment.handout}</p>
+    <p id="assignment-handout">{assignment.handout}</p>
   {/if}
 
   {#if showFeedback}
-    <code class="relative bg-slate-200 text-red-500 p-4 rounded-xl">
+    <code id="feedback-box" class="relative bg-slate-200 text-red-500 p-4 rounded-xl">
       <button
         class="absolute -top-2 -right-2 z-10 rounded-full bg-white hover:bg-red-500 hover:text-white"
         on:click={hideFeedback}
