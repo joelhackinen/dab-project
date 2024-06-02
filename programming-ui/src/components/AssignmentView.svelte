@@ -6,12 +6,13 @@
   import AssignmentSelection from "./AssignmentSelection.svelte";
   import Points from "./Points.svelte";
 
-  let code = "";
-  let assignment;
-  let source;
+  let code = ""; // value of the input field
+  let assignment; // assignment that is currently selected
+  let source; // sse handle
+
   let showFeedback = false;
-  let feedback = "";
-  let pending = false;
+  let feedback = ""; // grader feedback
+  let pending = false; // a submission is already pending for the user
 
   $: if (assignment) {
     hideFeedback();
@@ -26,6 +27,7 @@
       if (obj.correct) {
         alert("correct!");
         code = "";
+        assignment = undefined;
         await setAssignmentsStore();
         return;
       }

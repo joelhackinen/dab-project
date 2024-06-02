@@ -104,16 +104,6 @@ services:
     command: -connectRetries=60 -baselineOnMigrate=true migrate
     env_file:
       - project.env
-
-  e2e-playwright:
-    entrypoint: "/bin/true"
-    build: e2e-playwright
-    image: e2e-playwright
-    network_mode: host
-    depends_on:
-      - nginx
-    volumes:
-      - ./e2e-playwright/tests:/e2e-playwright/tests
   
   redis:
     image: redis:latest

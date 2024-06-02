@@ -15,7 +15,7 @@ try {
     MKSTREAM: true
   });
   console.log("Created consumer group.");
-} catch (e) {
+} catch (_e) {
   console.log("Consumer group already exists, skipped creation.");
 }
 
@@ -23,7 +23,7 @@ console.log(`Starting consumer submissions-${consumerName}.`);
 
 while (true) {
   try {
-    let response = await client.XREADGROUP(
+    const response = await client.XREADGROUP(
       commandOptions({
         isolated: true
       }),
