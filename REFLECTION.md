@@ -18,3 +18,5 @@ The application contains six different services:
     - accepts new submissions and publishes new entries to `submissions` stream
   6. nginx
     - reverse proxy and load balancer
+
+It is acknowledged that sometimes the tests fail
