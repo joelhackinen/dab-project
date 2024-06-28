@@ -108,8 +108,8 @@
     </code>
   {/if}
 
-  <TextArea bind:code disabled={pending} />
-  <GradingButton {submitCode} disabled={pending}>
+  <TextArea bind:code disabled={pending || !assignment} />
+  <GradingButton {submitCode} disabled={pending || !assignment}>
     Submit
   </GradingButton>
 </div>
